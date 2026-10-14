@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from decimal import Decimal
 from typing import Protocol
 
 from app.domain.prices import PriceRecord
@@ -21,3 +22,7 @@ class PriceRepository(Protocol):
     ) -> list[PriceRecord]:
         """Return records of a ticker, newest first, optionally within a time range."""
         ...
+
+
+class PriceSource(Protocol):
+    async def get_index_price(self, ticker: Ticker) -> Decimal: ...

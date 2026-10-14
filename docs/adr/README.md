@@ -18,3 +18,4 @@ New ADRs are created from [template.md](template.md). See
 | 0011 | [Continuous integration on GitHub Actions](0011-continuous-integration.md)    | Accepted |
 | 0012 | [Host the repository on GitHub](0012-host-repository-on-github.md)           | Accepted |
 | 0013 | [Integration tests via Testcontainers](0013-integration-tests-with-testcontainers.md) | Accepted |
+| 0014 | [Deribit HTTP client design](0014-deribit-client.md)                          | Accepted |
