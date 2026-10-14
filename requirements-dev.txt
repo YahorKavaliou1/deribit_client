@@ -9,3 +9,4 @@ testcontainers==4.15.0
 # Linting / typing
 ruff==0.17.0
 mypy==2.4.0
+celery-types==0.26.0
