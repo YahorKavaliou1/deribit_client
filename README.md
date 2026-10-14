@@ -20,7 +20,7 @@ Requires Python 3.12 and Docker.
 
 ```bash
 python3.12 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-dev.txt
+pip install -r requirements-dev.txt   # with uv: uv venv -p 3.12 && uv pip install -r requirements-dev.txt
 cp .env.example .env
 docker compose up -d db rabbitmq
 alembic upgrade head

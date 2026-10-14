@@ -11,7 +11,7 @@ x-app: &app
   environment:
     POSTGRES_HOST: db
     POSTGRES_PORT: 5432
-    CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672//
+    CELERY_BROKER_URL: "amqp://${RABBITMQ_DEFAULT_USER:?run: cp .env.example .env}:${RABBITMQ_DEFAULT_PASS:?run: cp .env.example .env}@rabbitmq:5672//"
 
 x-app-dependencies: &app-dependencies
   db:
