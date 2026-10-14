@@ -12,6 +12,8 @@ unit-testable without a database or network.
 
 Split the code into layers, with dependencies pointing inwards:
 
+- `domain` — framework-free core: `Ticker` enum and the `PriceRecord` value object with its
+  invariants (positive finite price, non-negative timestamp);
 - `clients` — Deribit HTTP client (aiohttp);
 - `db` — ORM models, engine and session management;
 - `repositories` — data access;
