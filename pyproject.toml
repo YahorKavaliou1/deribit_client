@@ -1,0 +1,24 @@
+[project]
+name = "deribit-client"
+version = "0.1.0"
+description = "Deribit index price collector (Celery) with a FastAPI read API"
+requires-python = ">=3.12"
+# Runtime dependencies are pinned in requirements.txt / requirements-dev.txt.
+dependencies = []
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "ASYNC"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+plugins = ["pydantic.mypy"]

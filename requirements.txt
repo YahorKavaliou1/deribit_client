@@ -1,0 +1,17 @@
+# Web API
+fastapi==0.143.1
+uvicorn[standard]==0.54.0
+
+# Periodic tasks
+celery==5.6.3
+
+# Deribit HTTP client
+aiohttp==3.14.5
+
+# Database
+sqlalchemy[asyncio]==2.1.4
+asyncpg==0.32.0
+alembic==1.20.0
+
+# Configuration
+pydantic-settings==2.16.0
