@@ -19,3 +19,4 @@ New ADRs are created from [template.md](template.md). See
 | 0012 | [Host the repository on GitHub](0012-host-repository-on-github.md)           | Accepted |
 | 0013 | [Integration tests via Testcontainers](0013-integration-tests-with-testcontainers.md) | Accepted |
 | 0014 | [Deribit HTTP client design](0014-deribit-client.md)                          | Accepted |
+| 0015 | [Partial failures in price collection](0015-partial-failures-in-price-collection.md) | Accepted |

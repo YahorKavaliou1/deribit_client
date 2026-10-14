@@ -17,7 +17,9 @@ Split the code into layers, with dependencies pointing inwards:
 - `clients` — Deribit HTTP client (aiohttp);
 - `db` — ORM models, engine and session management;
 - `repositories` — data access;
-- `services` — business logic (`PriceCollector`, price queries);
+- `services` — business logic (`PriceCollector`, price queries); the clock is injected
+  as a plain `Callable[[], float]` (default `time.time`), which is enough for deterministic
+  tests without a dedicated protocol;
 - `api` and `worker` — thin entry points that wire dependencies.
 
 Services depend on `typing.Protocol` interfaces of the client and repository, and on an

@@ -2,6 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-10-14
+- **Amended by:** [0015](0015-partial-failures-in-price-collection.md) (idempotency of retries)
 
 ## Context
 
