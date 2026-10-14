@@ -10,11 +10,13 @@ caught before review rather than by hand.
 
 ## Decision
 
-A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push, with two
-parallel jobs:
+A GitHub Actions workflow (`.github/workflows/ci.yml`) runs on every push, with parallel
+jobs:
 
 - **Lint** — `ruff check`, `ruff format --check`, `mypy` (strict);
-- **Tests** — `pytest`.
+- **Tests** — `pytest`;
+- **Docker image** — `docker compose config` and `docker build` (added with
+  [0018](0018-docker-deployment.md)).
 
 Both jobs use the same Python version as the project (3.12) and install dependencies from
 the pinned requirements files ([0008](0008-dependency-management.md)), with the pip cache

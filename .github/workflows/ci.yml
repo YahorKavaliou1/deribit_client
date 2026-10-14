@@ -55,3 +55,15 @@ jobs:
 
       - name: Pytest
         run: pytest
+
+  docker:
+    name: Docker image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Validate compose file
+        run: cp .env.example .env && docker compose config --quiet
+
+      - name: Build image
+        run: docker build --tag deribit-client:ci .

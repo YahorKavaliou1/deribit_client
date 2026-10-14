@@ -1,3 +1,26 @@
+# Usage: cp .env.example .env && docker compose up --build
+#
+# One application image runs in four roles: migrate (one-shot), api, worker and beat.
+# Inside the compose network the application reaches PostgreSQL and RabbitMQ by service
+# name, so the host-oriented values from .env are overridden below.
+
+x-app: &app
+  build: .
+  image: deribit-client:latest
+  env_file: .env
+  environment:
+    POSTGRES_HOST: db
+    POSTGRES_PORT: 5432
+    CELERY_BROKER_URL: amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq:5672//
+
+x-app-dependencies: &app-dependencies
+  db:
+    condition: service_healthy
+  rabbitmq:
+    condition: service_healthy
+  migrate:
+    condition: service_completed_successfully
+
 services:
   db:
     image: postgres:17-alpine
@@ -24,7 +47,48 @@ services:
       timeout: 5s
       retries: 10
 
-  # TODO: app services (api, celery worker + beat) — after implementation.
+  migrate:
+    <<: *app
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *app
+    ports:
+      - "${API_PORT:-8000}:8000"
+    depends_on: *app-dependencies
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - import urllib.request; urllib.request.urlopen('http://localhost:8000/openapi.json', timeout=3)
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  worker:
+    <<: *app
+    command: ["python", "-m", "app.worker", "worker", "--loglevel=INFO", "--concurrency=2"]
+    depends_on: *app-dependencies
+    restart: unless-stopped
+
+  beat:
+    <<: *app
+    # The schedule state file goes to /tmp: the application directory is read-only
+    # for the non-root user.
+    command:
+      - python
+      - -m
+      - app.worker
+      - beat
+      - --loglevel=INFO
+      - --schedule=/tmp/celerybeat-schedule
+    depends_on: *app-dependencies
+    restart: unless-stopped
 
 volumes:
   postgres_data:

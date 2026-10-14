@@ -22,3 +22,4 @@ New ADRs are created from [template.md](template.md). See
 | 0015 | [Partial failures in price collection](0015-partial-failures-in-price-collection.md) | Accepted |
 | 0016 | [Celery worker design](0016-celery-worker-design.md)                          | Accepted |
 | 0017 | [Public API design](0017-public-api-design.md)                                | Accepted |
+| 0018 | [Docker deployment](0018-docker-deployment.md)                                | Accepted |

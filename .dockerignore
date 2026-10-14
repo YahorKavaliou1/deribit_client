@@ -1,4 +1,5 @@
 .git
+.github
 .venv
 .idea
 .env
@@ -7,3 +8,7 @@
 .mypy_cache
 .ruff_cache
 tests
+docs
+*.md
+docker-compose.yml
+Dockerfile
