@@ -21,3 +21,4 @@ New ADRs are created from [template.md](template.md). See
 | 0014 | [Deribit HTTP client design](0014-deribit-client.md)                          | Accepted |
 | 0015 | [Partial failures in price collection](0015-partial-failures-in-price-collection.md) | Accepted |
 | 0016 | [Celery worker design](0016-celery-worker-design.md)                          | Accepted |
+| 0017 | [Public API design](0017-public-api-design.md)                                | Accepted |

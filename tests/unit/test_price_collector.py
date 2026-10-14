@@ -1,13 +1,13 @@
 import asyncio
-from collections.abc import Mapping, Sequence
+from collections.abc import Mapping
 from decimal import Decimal
 
 import pytest
 
 from app.domain.prices import PriceRecord
-from app.domain.queries import Pagination, TimeRange
 from app.domain.tickers import Ticker
 from app.services.price_collector import PriceCollector
+from tests.fakes.repositories import InMemoryPriceRepository
 
 NOW = 1_760_000_000.75
 
@@ -32,27 +32,10 @@ class FakePriceSource:
         return outcome
 
 
-class FakePriceRepository:
-    def __init__(self) -> None:
-        self.saved: list[PriceRecord] = []
-
-    async def add_many(self, records: Sequence[PriceRecord]) -> int:
-        self.saved.extend(records)
-        return len(records)
-
-    async def get_latest(self, ticker: Ticker) -> PriceRecord | None:
-        raise NotImplementedError
-
-    async def find(
-        self, ticker: Ticker, pagination: Pagination, time_range: TimeRange | None = None
-    ) -> list[PriceRecord]:
-        raise NotImplementedError
-
-
 def make_collector(
     prices: Mapping[Ticker, Decimal | BaseException],
-) -> tuple[PriceCollector, FakePriceSource, FakePriceRepository]:
-    source, repository = FakePriceSource(prices), FakePriceRepository()
+) -> tuple[PriceCollector, FakePriceSource, InMemoryPriceRepository]:
+    source, repository = FakePriceSource(prices), InMemoryPriceRepository()
     return PriceCollector(source, repository, clock=lambda: NOW), source, repository
 
 
@@ -68,7 +51,7 @@ async def test_collects_all_tickers_with_one_truncated_timestamp() -> None:
         PriceRecord(Ticker.ETH_USD, Decimal("2434.78"), 1_760_000_000),
     )
     assert result.records == expected
-    assert repository.saved == list(expected)
+    assert repository.records == list(expected)
     assert result.inserted == 2
     assert result.failures == {}
 
@@ -89,7 +72,7 @@ async def test_collects_only_requested_tickers() -> None:
     result = await collector.collect([Ticker.ETH_USD])
 
     assert source.requested == [Ticker.ETH_USD]
-    assert [record.ticker for record in repository.saved] == [Ticker.ETH_USD]
+    assert [record.ticker for record in repository.records] == [Ticker.ETH_USD]
     assert result.failed_tickers == ()
 
 
@@ -99,7 +82,7 @@ async def test_failed_ticker_does_not_prevent_storing_others() -> None:
 
     result = await collector.collect()
 
-    assert [record.ticker for record in repository.saved] == [Ticker.ETH_USD]
+    assert [record.ticker for record in repository.records] == [Ticker.ETH_USD]
     assert result.failures == {Ticker.BTC_USD: error}
     assert result.failed_tickers == (Ticker.BTC_USD,)
 
@@ -112,7 +95,7 @@ async def test_invalid_price_is_reported_as_failure() -> None:
     result = await collector.collect()
 
     assert isinstance(result.failures[Ticker.BTC_USD], ValueError)
-    assert [record.ticker for record in repository.saved] == [Ticker.ETH_USD]
+    assert [record.ticker for record in repository.records] == [Ticker.ETH_USD]
 
 
 async def test_all_tickers_failing_stores_nothing() -> None:
@@ -122,7 +105,7 @@ async def test_all_tickers_failing_stores_nothing() -> None:
 
     result = await collector.collect()
 
-    assert repository.saved == []
+    assert repository.records == []
     assert result.inserted == 0
     assert result.failed_tickers == (Ticker.BTC_USD, Ticker.ETH_USD)
 
@@ -135,4 +118,4 @@ async def test_cancellation_is_propagated() -> None:
     with pytest.raises(asyncio.CancelledError):
         await collector.collect()
 
-    assert repository.saved == []
+    assert repository.records == []

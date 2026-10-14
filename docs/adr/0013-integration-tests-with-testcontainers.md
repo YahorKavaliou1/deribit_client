@@ -16,7 +16,9 @@ differently.
 - A session-scoped fixture starts a throwaway PostgreSQL container with **Testcontainers**,
   using the same image as Docker Compose (`postgres:17-alpine`), and applies the real
   **Alembic migrations** (so migrations are tested too).
-- Each test runs inside an outer transaction that is rolled back afterwards, keeping tests
+- API integration tests run the full FastAPI app (lifespan included) against the same
+  container.
+- Each repository test runs inside an outer transaction that is rolled back afterwards, keeping tests
   isolated and fast. `Database` session commit/rollback behaviour is tested separately
   with explicit cleanup.
 - CI runs them in the regular test job: GitHub-hosted Ubuntu runners provide Docker.
