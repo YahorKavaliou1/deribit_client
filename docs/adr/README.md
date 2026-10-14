@@ -15,3 +15,5 @@ New ADRs are created from [template.md](template.md). See
 | 0008 | [Pinned requirements files](0008-dependency-management.md)                    | Accepted |
 | 0009 | [Layered architecture](0009-layered-architecture.md)                          | Proposed |
 | 0010 | [Price storage schema](0010-price-storage-schema.md)                          | Proposed |
+| 0011 | [Continuous integration on GitHub Actions](0011-continuous-integration.md)    | Accepted |
+| 0012 | [Host the repository on GitHub](0012-host-repository-on-github.md)           | Accepted |
