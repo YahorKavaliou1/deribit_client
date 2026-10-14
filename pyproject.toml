@@ -10,6 +10,9 @@ dependencies = []
 testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
+markers = [
+    "integration: tests that start a PostgreSQL container (require Docker)",
+]
 
 [tool.ruff]
 line-length = 100

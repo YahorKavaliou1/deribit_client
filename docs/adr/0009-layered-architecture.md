@@ -12,8 +12,8 @@ unit-testable without a database or network.
 
 Split the code into layers, with dependencies pointing inwards:
 
-- `domain` — framework-free core: `Ticker` enum and the `PriceRecord` value object with its
-  invariants (positive finite price, non-negative timestamp);
+- `domain` — framework-free core: `Ticker` enum, the `PriceRecord` value object and query
+  value objects (`TimeRange`, `Pagination`), each validating its own invariants;
 - `clients` — Deribit HTTP client (aiohttp);
 - `db` — ORM models, engine and session management;
 - `repositories` — data access;
@@ -23,6 +23,14 @@ Split the code into layers, with dependencies pointing inwards:
 Services depend on `typing.Protocol` interfaces of the client and repository, and on an
 injected clock, rather than on concrete classes. Services exchange domain dataclasses, not
 ORM models.
+
+- The protocols live in `app/services/ports.py`: the consumer owns the interface, so the
+  service layer does not import SQLAlchemy or aiohttp.
+- Repositories work inside a session passed by the caller and never commit; transaction
+  boundaries are owned by the entry point (one `Database.session()` per request or task
+  run).
+- The repository exposes a single `find(ticker, pagination, time_range=None)` instead of
+  separate "all" and "by period" methods: "all data" is a query with an open time range.
 
 ## Alternatives considered
 

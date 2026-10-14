@@ -4,6 +4,7 @@ from decimal import Decimal
 import pytest
 
 from app.domain.prices import PriceRecord
+from app.domain.queries import Pagination, TimeRange
 from app.domain.tickers import Ticker
 
 
@@ -41,3 +42,19 @@ def test_price_record_rejects_invalid_price(price: Decimal) -> None:
 def test_price_record_rejects_negative_timestamp() -> None:
     with pytest.raises(ValueError, match="Timestamp"):
         PriceRecord(ticker=Ticker.BTC_USD, price=Decimal("1"), timestamp=-1)
+
+
+@pytest.mark.parametrize(("start", "end"), [(None, None), (1, None), (None, 1), (1, 1), (1, 2)])
+def test_time_range_accepts_valid_bounds(start: int | None, end: int | None) -> None:
+    assert TimeRange(start=start, end=end) == TimeRange(start, end)
+
+
+def test_time_range_rejects_start_after_end() -> None:
+    with pytest.raises(ValueError, match="after"):
+        TimeRange(start=2, end=1)
+
+
+@pytest.mark.parametrize(("limit", "offset"), [(0, 0), (-1, 0), (1, -1)])
+def test_pagination_rejects_invalid_values(limit: int, offset: int) -> None:
+    with pytest.raises(ValueError):
+        Pagination(limit=limit, offset=offset)

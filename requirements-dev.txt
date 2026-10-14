@@ -5,6 +5,7 @@ pytest==9.1.1
 pytest-asyncio==1.4.0
 httpx==0.28.1
 aioresponses==0.7.9
+testcontainers==4.15.0
 
 # Linting / typing
 ruff==0.17.0
